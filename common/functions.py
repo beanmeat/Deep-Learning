@@ -24,7 +24,7 @@ def softmax0(x):
     x = x - np.max(x)
     return np.exp(x) / np.sum(np.exp(x))
 
-def softmax1(x):
+def softmax(x):
     if x.ndim == 2:
         x = x.T
         x = x - np.max(x, axis=0)
@@ -38,6 +38,22 @@ def softmax1(x):
 def identity(x):
     return x
 
+# 二、损失函数
+# 1. MSE
+def mean_squared_error(y, t):
+    return 0.5 * np.sum((y-t)**2)
+
+# 2.交叉熵误差
+def cross_entropy_error(y, t):
+    # 对于一维情况，直接转换为二维
+    if y.ndim == 1:
+        t = t.reshape(1, t.size)
+        y = y.reshape(1, y.size)
+    # t是独热编码表示，转换为正确类别的索引
+    if t.size == y.size:
+        t = t.argmax(axis = 1)
+    n = y.shape[0]
+    return -np.sum(np.log(y[np.arange(n), t]))
+
 # 测试
 x = np.array([0,1,2,3,4,5,-1,-2,-3,-4,-5])
-print(softmax1(x))

@@ -1,4 +1,8 @@
+import numpy as np
+
 from common.functions import *
+
+
 # ReLU层
 class Relu:
     def __init__(self):
@@ -6,17 +10,18 @@ class Relu:
         self.mask = None
 
     # 向前传播
-    def forward(self,x):
+    def forward(self, x):
         self.mask = (x <= 0)
         y = x.copy()
         y[self.mask] = 0
         return y
 
     # 反向传播
-    def backward(self,dout):
+    def backward(self, dout):
         dx = dout.copy()
         dx[self.mask] = 0
         return dx
+
 
 # Sigmoid层
 class Sigmoid:
@@ -24,15 +29,16 @@ class Sigmoid:
         self.y = None
 
     # 向前传播
-    def forward(self,x):
+    def forward(self, x):
         y = sigmoid(x)
         self.y = y
         return y
 
     # 反向传播
-    def backward(self,dout):
+    def backward(self, dout):
         dx = dout * (1.0 - self.y) * self.y
         return dx
+
 
 # 仿射层
 class Affine:
@@ -59,3 +65,30 @@ class Affine:
         self.dW = np.dot(self.X.T, dout)
         self.db = np.sum(dout, axis=0)
         return dx.reshape(*self.X_original_shape)
+
+
+# 输出层softmax+loss
+class SoftmaxWithLoss:
+    def __init__(self):
+        self.y = None
+        self.t = None
+        self.loss = None  # 损失值
+
+    # 前向传播
+    def forward(self, x, t):
+        self.t = t
+        self.y = softmax(x)
+        self.loss = cross_entropy_error(self.y, self.t)
+        return self.loss
+
+    # 反向传播
+    def backward(self, dout=1):
+        # 标签是独热编码
+        n = self.t.shape[0]
+        if self.t.size == self.y.size:
+            dx = (self.y - self.t) * dout / n
+        # 标签是分类编号，就将预测值对应索引号的元素减 1
+        else:
+            dx = self.y.copy()
+            dx[np.arange(n), self.t] -= 1
+        return dx / n

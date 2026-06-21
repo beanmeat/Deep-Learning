@@ -1,6 +1,8 @@
 import torch
 import torch.nn as nn
 
+from torchsummary import summary # 统计模型结构和参数信息
+
 # 实现自定义神经网络类
 class Model(nn.Module):
     # 初始化
@@ -34,3 +36,14 @@ model = Model()
 output = model.forward(x)
 
 print(output)
+
+# 查看模型参数
+# 1. 遍历named_parameters 查看各层参数
+for name, param in model.named_parameters():
+    print(name, param.data)
+    print()
+# 2. 查看状态字典
+print("ret:",model.state_dict())
+
+# 3. 统计信息
+summary(model, (3,),10, device="cpu")

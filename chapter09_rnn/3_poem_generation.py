@@ -130,7 +130,7 @@ def generate_poem(model, word2idx, vocab, start_token, line_num=4, line_length=7
                         current_line_length -= 1
                     current_line_length = line_length
                     poem.append(interpunction)   # 每句结尾添加标点符号
-                    return "".join(poem)   # 将列表转换为字符串
+            return "".join(poem)   # 将列表转换为字符串
 
 
 

@@ -103,7 +103,7 @@ def train(model, dataset, lr, epoch_num, batch_size, device):
         # 计算训练平均损失
         print(f"loss:{loss_total/len(dataset):.6f}")
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-train(model, dataset, lr=0.01, epoch_num=10, batch_size=20, device=device)
+train(model, dataset, lr=0.01, epoch_num=1, batch_size=1, device=device)
 
 # 5. 生成文本
 def generate_poem(model, word2idx, vocab, start_token, line_num=4, line_length=7):
